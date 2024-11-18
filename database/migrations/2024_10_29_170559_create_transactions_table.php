@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->float('total');
-            $table->foreignId('worker_id');
             $table->timestamps();
         });
     }

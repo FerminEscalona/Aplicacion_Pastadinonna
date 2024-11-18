@@ -21,9 +21,9 @@ class product extends Model
         'image'=> 'string',
         'category'=> 'string',
     ];
-    public function transaction()
+    public function detail()
     {
-        return $this->hasMany(transaction::class);
+        return $this->hasMany(detail::class);
     }
     
     

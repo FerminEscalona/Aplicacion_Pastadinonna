@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('position');
-            $table->integer('phone_number');
+            $table->string('phone_number');
             $table->date('hiring_date');
             $table->timestamps();
         });

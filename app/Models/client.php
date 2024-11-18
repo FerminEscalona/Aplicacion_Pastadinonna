@@ -1,18 +1,18 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Database\Eloquent\Model;
 
-class customer extends Model
+class client extends Model
 {
-    use hasFactory;
-    protected $fillable = ['id','nombre', 'telefono', 'direccion'];
+    protected $fillable = ['id','name', 'phone_number', 'email', 'address'];
     protected $casts = [
         'id' => 'integer',
         'name' => 'string',
         'phone' => 'string',
-        'direction' => 'string',
+        'email' => 'string',
+        'address'=> 'string',
     ];
     protected $hidden = [
         'created_at',

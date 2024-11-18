@@ -23,12 +23,12 @@ class transaction extends Model
         'product_id' => 'integer',
     ];
 
-    public function customer()
+    public function client()
     {
-        return $this->belongsTo(customer::class);
+        return $this->belongsTo(client::class);
     }
-    public function product()
+    public function detail()
     {
-        return $this->belongsTo(product::class);
+        return $this->hasMany(detail::class);
     }
 }
