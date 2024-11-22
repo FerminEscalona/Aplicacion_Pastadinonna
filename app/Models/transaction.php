@@ -9,18 +9,12 @@ class transaction extends Model
     use HasFactory;
     protected $fillable = [
         'id',
-        'amount',
         'total',
-        'customer_id',
-        'product_id',
     ];
 
     protected $casts = [
         'id' => 'integer',
-        'amount' => 'float',
         'total' => 'float',
-        'customer_id' => 'integer',
-        'product_id' => 'integer',
     ];
 
     public function client()
