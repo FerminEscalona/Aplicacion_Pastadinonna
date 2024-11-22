@@ -31,7 +31,7 @@ class AuthController extends Controller
         }
 
         // Crear un nuevo trabajador
-        $worker = Worker::create([
+        $worker = worker::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password), // Hashea la contraseña

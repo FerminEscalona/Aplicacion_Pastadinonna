@@ -1,0 +1,272 @@
+/* Variables globales */
+:root {
+    --background-color: #E5D9B6;
+    --section-background-color: #E6DEC8;
+    --primary-color: #455029;
+    --secondary-color: #1E2130;
+    --highlight-color: #B89A70;
+    --notification-bg-color: #f1f1e8;
+    --eliminated-bg-color: #ebe6d2;
+    --button-bg-color: #8B9770;
+    --button-bg-delete-color: rgb(135, 40, 40);
+    --button-hover-bg-color: #D4A02F;
+    --text-color-white: #ffffff;
+    --text-color: #333;
+    --font-size-large: 1.2rem;
+    --font-size-medium: 1rem;
+    --font-size-small: 0.9rem;
+    --general-font: 'Alegreya', serif;
+    --font-family-alt: "Cinzel", serif;
+}
+
+/* General Styles */
+body {
+    font-family: var(--general-font);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: grid; 
+    grid-template-rows: auto 1fr; /* Dos filas: header ajustable y contenido expandible */
+    grid-template-columns: 1fr; /* Una sola columna */
+    height: 100vh;
+    overflow: hidden;
+}
+header{
+    grid-row: 1; /* Coloca el header en la primera fila */
+    grid-column: 1; /* Ocupa toda la columna */
+    display: grid;
+    padding: 10px;
+}
+/* Layout for Main and Fixed Aside */
+main {
+    grid-row: 2; /* Coloca el main en la segunda fila */
+    grid-column: 1; /* Ocupa toda la columna */
+    width: 75%;
+    margin-right: 25%;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    height: 100vh; /* Ocupa toda la altura de la ventana para un scroll vertical completo */
+}
+
+#main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto; /* Para que el contenedor principal en main tenga scroll independiente */
+    max-height: 100%; /* Limita la altura al contenedor padre (main) */
+}
+
+/* Estilo para el aside */
+aside {
+    width: 25%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding-top: 0;
+    padding-right: 20px;
+    padding-left: 20px;
+    background-color: var(--section-background-color);
+    box-sizing: border-box;
+    border-left: 2px solid var(--primary-color);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.encabezado{
+    background-color: var(--primary-color);
+}
+#titulo{
+    display: flex;
+    font-family: var(--general-font);
+    color:var(--text-color-white);
+    padding-left: 26%;
+    align-items: left;
+}
+
+/* Imagen de perfil en el aside */
+.img-container {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--section-background-color);
+}
+
+.img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Información de usuario en el aside */
+.info-container {
+    flex: 0 0 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-container span {
+    display: block;
+    font-size: 20px;
+    color: var(--text-color);
+}
+
+/* Contenedor de pedidos atendidos */
+.Atendidos-container {
+    overflow-y: auto;
+    background-color: var(--eliminated-bg-color);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--primary-color);
+    width: 100%;
+    height: 450px;
+    box-sizing: border-box;
+}
+
+.Atendidos-container .deleted-notification {
+    background-color: var(--notification-bg-color);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid var(--primary-color);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.Atendidos-container .deleted-notification .order-details {
+    font-size: var(--font-size-small);
+    text-align: left;
+}
+
+.Atendidos-container .deleted-notification .order-details h4 {
+    margin: 0;
+    font-size: var(--font-size-medium);
+    color: var(--primary-color);
+}
+
+.Atendidos-container .deleted-notification .order-details ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 5px 0;
+}
+
+.Atendidos-container .deleted-notification .order-details ul li {
+    margin-bottom: 5px;
+}
+#subtitulo{
+    font-size: 20px;
+    font-family: var(--font-family-alt);
+}
+/* Notification Container Styles */
+.notification-container {
+    position: relative;
+    border: 1px solid var(--primary-color);
+    border-radius: 10px;
+    padding: 15px;
+    overflow: hidden;
+    background-color: var(--notification-bg-color);
+    flex-shrink: 0; /* Evita que los contenedores de notificaciones cambien de tamaño */
+}
+
+.notification-container .notification-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+    background-color: var(--button-bg-delete-color);
+    border-radius: 50%;
+}
+
+.notification-container:hover .notification-badge {
+    display: none;
+}
+
+.pedido-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pedido-table th, .pedido-table td {
+    padding: 8px;
+    border-bottom: 1px solid var(--primary-color);
+}
+
+.pedido-table th {
+    background-color: var(--primary-color);
+    color: var(--text-color-white);
+}
+
+/* Buttons */
+.buttons-container button {
+    margin: 5px;
+    padding: 8px;
+    font-size: var(--font-size-medium);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.attended {
+    background-color: var(--button-hover-bg-color);
+}
+.logout-container{
+    padding: 15px;
+}
+.logout-button{
+    background-color:var(--section-background-color);
+    border: none;
+    width: 100px;
+}
+.logout-button:hover{
+    cursor: pointer;
+    color: red;
+}
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+    body {
+        display: flex;
+        flex-direction: column; 
+        height: auto; /* Permite que la altura del contenido sea dinámica */
+        overflow: auto; /* Permite el scroll en dispositivos pequeños */
+    }
+
+    main {
+        order: 1; /* Asegura que el main aparezca primero */
+        width: 100%; /* Ocupa todo el ancho de la pantalla */
+        margin-right: 0; /* Elimina cualquier margen lateral */
+        padding-bottom: 20px;
+        height: auto; /* Permite que el contenido crezca según su contenido */
+        overflow: auto; /* Activa el scroll si es necesario */
+    }
+
+    aside {
+        order: 2; /* Asegura que el aside aparezca después del main */
+        width: 100%; /* Ocupa todo el ancho de la pantalla */
+        margin-top: 10px; /* Espacio entre el aside y el main */
+        border-left: none;
+        border-top: 2px solid var(--primary-color); /* Añade un borde superior */
+        position: relative; /* Restablece la posición a relativa */
+        padding: 15px 10px;
+    }
+}
+

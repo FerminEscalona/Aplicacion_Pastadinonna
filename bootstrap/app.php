@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->api(prepend: [
-            HandleCors::class,
+            \Illuminate\Http\Middleware\HandleCors::class,
         ]);
         $middleware->web(append: [
             \App\Http\Middleware\RoleMiddleware::class, // Agrega el middleware aquí
