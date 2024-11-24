@@ -324,81 +324,69 @@ function irCaja() {
 // Ejecutar la función al cargar la página para obtener los productos de la API
 document.addEventListener('DOMContentLoaded', cargarProductos);
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Obtener los productos de la URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const productosJSON = urlParams.get('productos');
+document.addEventListener('DOMContentLoaded', function () {
+    // Obtener los productos de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productosJSON = urlParams.get('productos');
 
-  // Variable para almacenar el total del pedido
-  let totalPedido = 0;
+    let totalPedido = 0; // Variable para el total del pedido
 
-  if (productosJSON) {
-      // Parsear la cadena JSON a un objeto
-      const productos = JSON.parse(productosJSON);
-      console.log('Productos:', productos);
+    if (productosJSON) {
+        const productos = JSON.parse(productosJSON);
+        console.log('Productos cargados desde la URL:', productos);
 
-      // Hacer una solicitud a la API para obtener los detalles de los productos (incluido el precio)
-      fetch(apiUrl)
-          .then(response => response.json())  // Convierte la respuesta a JSON
-          .then(data => {
-              const productosAPI = data.data;  // Aquí están los productos traídos desde la API
-              console.log('Productos desde la API:', productosAPI);
+        // Hacer una solicitud a la API para obtener detalles de los productos
+        fetch(apiUrl)
+            .then(response => response.json()) // Convertir la respuesta a JSON
+            .then(data => {
+                const productosAPI = data; // Lista de productos desde la API
+                console.log('Productos desde la API:', productosAPI);
 
-              // Insertar los productos en la tabla de productos con el precio calculado
-              const productosTableBody = document.querySelector('.productos'); // Acceder al tbody de la tabla
+                const productosTableBody = document.querySelector('.productos'); // Cuerpo de la tabla
 
-              productos.forEach(producto => {
-                  // Buscar el producto en los datos de la API
-                  const productoAPI = productosAPI.find(p => p.Nombre === producto.nombre);
+                productos.forEach(productoCarrito => {
+                    // Buscar el producto en los datos de la API por su nombre
+                    const productoAPI = productosAPI.find(p => p.name === productoCarrito.nombre);
 
-                  if (productoAPI) {
-                      // Definir el porcentaje de impuesto
-                      const impuesto = 0.16; // 16% de impuesto
+                    if (productoAPI) {
+                        const precioUnitario = productoAPI.price;
+                        const precioTotal = precioUnitario * productoCarrito.cantidad;
 
-                      // Calcular el precio unitario y luego el total con la cantidad
-                      const precioUnitario = productoAPI.Precio;
-                      const precioTotal = precioUnitario * producto.cantidad;
+                        totalPedido += precioTotal;
 
-                      // Aplicar el impuesto al precio total
-                      const precioConImpuesto = precioTotal + (precioTotal * impuesto);
+                        // Crear fila para la tabla
+                        const fila = document.createElement('tr');
+                        fila.setAttribute('data-id', productoAPI.id); // Asegurar que la fila tenga un ID para el backend
 
-                      // Sumar el precio con impuesto al total del pedido
-                      totalPedido += precioConImpuesto;
+                        const nombreCelda = document.createElement('td');
+                        nombreCelda.textContent = productoCarrito.nombre;
 
-                      // Crear una nueva fila para el producto
-                      const fila = document.createElement('tr');
+                        const cantidadCelda = document.createElement('td');
+                        cantidadCelda.textContent = productoCarrito.cantidad;
 
-                      // Crear las celdas para el nombre, cantidad y precio
-                      const nombreCelda = document.createElement('td');
-                      nombreCelda.textContent = producto.nombre;
+                        const precioCelda = document.createElement('td');
+                        precioCelda.textContent = `$${precioTotal.toFixed(2)}`;
 
-                      const cantidadCelda = document.createElement('td');
-                      cantidadCelda.textContent = producto.cantidad;
+                        fila.appendChild(nombreCelda);
+                        fila.appendChild(cantidadCelda);
+                        fila.appendChild(precioCelda);
 
-                      const precioCelda = document.createElement('td');
-                      precioCelda.textContent = `$${precioTotal.toFixed(2)}`; // Mostrar el precio total
+                        productosTableBody.appendChild(fila);
+                    } else {
+                        console.error(`Producto no encontrado en la API: ${productoCarrito.nombre}`);
+                    }
+                });
 
-                      // Añadir las celdas a la fila
-                      fila.appendChild(nombreCelda);
-                      fila.appendChild(cantidadCelda);
-                      fila.appendChild(precioCelda);
-
-                      // Añadir la fila al cuerpo de la tabla
-                      productosTableBody.appendChild(fila);
-                  } else {
-                      console.error(`No se encontró el producto ${producto.nombre} en la API`);
-                  }
-              });
-
-              // Actualizar el span del total con la suma de los precios de los productos
-              const totalSpan = document.querySelector('#total');
-              totalSpan.textContent = `$${totalPedido.toFixed(2)}`; // Asignar el valor total formateado
-          })
-          .catch(error => console.error('Error al cargar los productos desde la API:', error));
-  } else {
-      console.log("No se encontraron productos en la URL.");
-  }
+                // Mostrar el total en la página
+                const totalSpan = document.querySelector('#total');
+                totalSpan.textContent = `$${totalPedido.toFixed(2)}`;
+            })
+            .catch(error => console.error('Error al cargar los productos desde la API:', error));
+    } else {
+        console.log('No se encontraron productos en la URL.');
+    }
 });
+
 
 // Obtener el formulario y el botón de confirmar pedido
 let datosFormulario;
