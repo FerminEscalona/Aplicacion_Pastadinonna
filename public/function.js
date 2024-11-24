@@ -275,7 +275,7 @@ function mostrarProductos(productos) {
               postresElement.innerHTML += productoHTML;
               postresImagenes.innerHTML += imagenHTML;
               break;
-          case 'Bebidas frias':
+          case 'Bebidas frías':
               bebidasElement.innerHTML += productoHTML;
               bebidasImagenes.innerHTML += imagenHTML;
               break;
