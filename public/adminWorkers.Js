@@ -169,21 +169,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
                 console.log('Trabajador creado:', data); // Para verificar la respuesta
 
-                // Acceder al trabajador creado dentro de la propiedad 'data'
-                const newWorker = data.data;
+                // Acceder al trabajador creado dentro de la propiedad 'data' o 'worker' o directamente 'data'
+                let newWorker;
+                if (data.data) {
+                    newWorker = data.data;
+                } else if (data.worker) {
+                    newWorker = data.worker;
+                } else if (data.success && data.name) { // Caso en que data es el trabajador
+                    newWorker = data;
+                } else {
+                    newWorker = null;
+                }
 
-                alert(`Trabajador creado: ${newWorker.name}`); // Mostrar mensaje de éxito
-                addWorkersFromArray([newWorker]); // Añadir al UI como un array con un solo elemento
+                if (newWorker && newWorker.name) {
+                    alert(`Trabajador creado: ${newWorker.name}`); // Mostrar mensaje de éxito
+                    addWorkersFromArray([newWorker]); // Añadir al UI como un array con un solo elemento
 
-                // Limpiar los campos del formulario
-                document.getElementById('name').value = '';
-                document.getElementById('password').value = '';
-                document.getElementById('cargo').value = '';
-                document.getElementById('cedula').value = '';
+                    // Limpiar los campos del formulario
+                    document.getElementById('name').value = '';
+                    document.getElementById('password').value = '';
+                    document.getElementById('cargo').value = '';
+                    document.getElementById('cedula').value = '';
+                } else {
+                    console.error('La estructura de la respuesta del POST es inesperada:', data);
+                    alert('No se pudo agregar el trabajador debido a una respuesta inesperada del servidor.');
+                }
             } else {
                 const error = await response.json();
                 console.error('Error:', error);
-                alert('No se pudo agregar el trabajador.');
+                if (error.errors) {
+                    let errorMessage = 'No se pudo agregar el trabajador:\n';
+                    for (const [key, messages] of Object.entries(error.errors)) {
+                        errorMessage += `${key}: ${messages.join(', ')}\n`;
+                    }
+                    alert(errorMessage);
+                } else {
+                    alert('No se pudo agregar el trabajador.');
+                }
             }
         } catch (error) {
             console.error('Error en la solicitud:', error);
