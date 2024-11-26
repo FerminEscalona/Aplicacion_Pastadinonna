@@ -9,7 +9,7 @@ async function cargarPedidos() {
         if (response.ok) {
             const data = await response.json();
             console.log("Respuesta recibida del servidor:", data);
-            const pedidosDesdeAPI = Array.isArray(data) ? data : [];
+            const pedidosDesdeAPI = Array.isArray(data) ? data : (data.data || []);
 
             let nuevosPedidos = 0;
 
@@ -43,7 +43,7 @@ async function cargarPedidos() {
 
 // Función para transformar el pedido de la API a la estructura esperada
 function transformarPedido(pedido) {
-    const { id, customer, order_items, status } = pedido;
+    const { id, customer, order_items, status, created_at } = pedido;
     const cedula = customer?.identification_number || 'N/A';
     const platos = Array.isArray(order_items) && order_items.length > 0 
         ? order_items.map(item => ({
@@ -56,13 +56,14 @@ function transformarPedido(pedido) {
         ? order_items.reduce((sum, item) => sum + (parseFloat(item.price) * parseInt(item.quantity, 10)), 0).toFixed(2)
         : '0.00';
     const estado = status === 'pending' ? 'Pendiente' : 'Atendido';
+    const fecha = created_at ? new Date(created_at) : new Date();
 
-    return { id, cedula, platos, total, estado };
+    return { id, cedula, platos, total, estado, fecha };
 }
 
 // Función para crear una notificación para cada pedido
 function createNotificationPedido(pedido) {
-    const { platos, total, cedula, estado } = pedido;
+    const { platos, total, cedula, estado, fecha } = pedido;
 
     const notification = document.createElement('div');
     notification.classList.add('notification-container');
@@ -79,11 +80,27 @@ function createNotificationPedido(pedido) {
         }
     });
 
-    // Mostrar cédula del cliente
+    // Mostrar cédula del cliente y fecha/hora del pedido
     const cedulaElement = document.createElement('div');
     cedulaElement.classList.add('cedula-info');
     cedulaElement.textContent = `Cédula: ${cedula}`;
     notification.appendChild(cedulaElement);
+
+    const fechaElement = document.createElement('div');
+    fechaElement.classList.add('fecha-info');
+    const formattedDate = fecha.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    const formattedTime = fecha.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    fechaElement.textContent = `Fecha: ${formattedDate} Hora: ${formattedTime}`;
+    notification.appendChild(fechaElement);
 
     // Crear tabla para los items del pedido
     const table = document.createElement('table');
@@ -133,6 +150,7 @@ function AtenderPedido(pedidoId) {
 
     const pedido = pedidosPendientes[pedidoIndex];
     pedido.estado = "Atendido";
+    pedido.fechaAtendido = new Date(); // Añadir fecha de atención
 
     // Mover el pedido de pendientes a atendidos
     pedidosPendientes.splice(pedidoIndex, 1);
@@ -153,7 +171,7 @@ function AtenderPedido(pedidoId) {
 
 // Función para mostrar pedido atendido
 function mostrarPedidoAtendido(pedido) {
-    const { platos, total, cedula, estado } = pedido;
+    const { platos, total, cedula, estado, fechaAtendido } = pedido;
 
     const Atendido = document.createElement('div');
     Atendido.classList.add('deleted-notification');
@@ -165,6 +183,23 @@ function mostrarPedidoAtendido(pedido) {
     header.classList.add('pedido-header');
     header.textContent = `Cédula: ${cedula}`;
     Atendido.appendChild(header);
+
+    // Información de fecha y hora de atención
+    const fechaAtendidoElement = document.createElement('div');
+    fechaAtendidoElement.classList.add('fecha-atendido-info');
+    const formattedDateAtendido = fechaAtendido.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    const formattedTimeAtendido = fechaAtendido.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    fechaAtendidoElement.textContent = `Atendido el: ${formattedDateAtendido} Hora: ${formattedTimeAtendido}`;
+    Atendido.appendChild(fechaAtendidoElement);
 
     // Crear tabla para los items del pedido
     const table = document.createElement('table');
@@ -242,7 +277,7 @@ function filtrarPedidos() {
 
 // Función para crear el elemento HTML de un pedido filtrado
 function crearElementoFiltrado(pedido) {
-    const { platos, total, cedula, estado } = pedido;
+    const { platos, total, cedula, estado, fechaAtendido } = pedido;
 
     const elemento = document.createElement('div');
     elemento.classList.add(estado === 'Atendido' ? 'deleted-notification' : 'notification-container');
@@ -254,6 +289,25 @@ function crearElementoFiltrado(pedido) {
     header.classList.add('pedido-header');
     header.textContent = `Cédula: ${cedula}`;
     elemento.appendChild(header);
+
+    // Información de fecha y hora de atención si está atendido
+    if (estado === 'Atendido' && fechaAtendido) {
+        const fechaAtendidoElement = document.createElement('div');
+        fechaAtendidoElement.classList.add('fecha-atendido-info');
+        const formattedDateAtendido = new Date(fechaAtendido).toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        const formattedTimeAtendido = new Date(fechaAtendido).toLocaleTimeString('es-ES', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        fechaAtendidoElement.textContent = `Atendido el: ${formattedDateAtendido} Hora: ${formattedTimeAtendido}`;
+        elemento.appendChild(fechaAtendidoElement);
+    }
 
     // Crear tabla para los items del pedido
     const table = document.createElement('table');
@@ -289,3 +343,82 @@ setInterval(cargarPedidos, 5000); // Llamar a cargarPedidos cada 5 segundos
 
 // Llamar a cargarPedidos al cargar la página para evitar esperar 5 segundos
 document.addEventListener('DOMContentLoaded', cargarPedidos);
+
+// Función para mostrar la fecha y la hora actuales
+function cargarInformacionUsuario() {
+    const infoContainer = document.querySelector('.info-container');
+    if (infoContainer) {
+        // Función para actualizar la fecha y la hora
+        function updateDateTime() {
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            const formattedTime = now.toLocaleTimeString('es-ES', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            infoContainer.innerHTML = `
+                <span>Fecha: ${formattedDate}</span>
+                <span>Hora: ${formattedTime}</span>
+            `;
+        }
+
+        updateDateTime(); // Llamada inicial
+        setInterval(updateDateTime, 1000); // Actualizar cada segundo
+    }
+}
+
+// Función para eliminar un pedido usando su ID
+async function deleteWorker(cedula) {
+    if (!confirm('¿Estás seguro de que deseas eliminar este trabajador?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:8000/api/workers/${cedula}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert(data.message || 'Trabajador eliminado exitosamente.'); // Mostrar mensaje de éxito
+            // Eliminar del UI
+            const mainContainer = document.getElementById('main-container');
+            const workerCard = mainContainer.querySelector(`[data-cedula="${cedula}"]`);
+            if (workerCard) {
+                workerCard.remove();
+                lastAddedWorkers = lastAddedWorkers.filter(w => w.cedula !== cedula);
+                updateLastAddedList();
+            }
+        } else {
+            alert(data.message || 'No se pudo eliminar el trabajador.'); // Mostrar mensaje de error
+        }
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        alert('Hubo un error al intentar eliminar el trabajador.');
+    }
+}
+
+// Evento de envío del formulario para eliminar
+document.getElementById('delete-worker-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Evitar que el formulario se envíe de forma tradicional
+
+    const cedula = document.getElementById('cedula-borrar').value.trim(); // Obtener la cédula del formulario
+
+    if (cedula && /^\d+$/.test(cedula)) {
+        // Llamar a la función de eliminación con la cédula obtenida
+        deleteWorker(cedula);
+        document.getElementById('cedula-borrar').value = ''; // Limpiar el campo
+    } else {
+        alert('Por favor ingresa una cédula válida.');
+    }
+});

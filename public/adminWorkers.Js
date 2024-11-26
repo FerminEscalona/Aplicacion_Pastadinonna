@@ -214,15 +214,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Cargar información del usuario en el aside al abrir la página
+// Función para mostrar la fecha y la hora actuales
 function cargarInformacionUsuario() {
     const infoContainer = document.querySelector('.info-container');
     if (infoContainer) {
-        // Aquí podrías cargar la información real del usuario desde la sesión o API
-        infoContainer.innerHTML = `
-            <span>Nombre: Fermin</span>
-            <span>Cargo: Backend Developer</span>
-        `;
+        // Función para actualizar la fecha y la hora
+        function updateDateTime() {
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            const formattedTime = now.toLocaleTimeString('es-ES', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            infoContainer.innerHTML = `
+                <span>Fecha: ${formattedDate}</span>
+                <span>Hora: ${formattedTime}</span>
+            `;
+        }
+
+        updateDateTime(); // Llamada inicial
+        setInterval(updateDateTime, 1000); // Actualizar cada segundo
     }
 }
 
