@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="gestorStyles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=logout" />
-    <script src="logic.js"></script>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=logout" />
+    <script src="pedidos.js"></script>
     <title>Pedidos</title>
 </head>
+
 <body>
     <header class="encabezado">
         <h1 id="titulo">
             PEDIDOS PENDIENTES
-            </h1>
+        </h1>
     </header>
     <main>
         <button onclick="crearPedidoTemporal()">PEDIDO TEMPORAL</button>
@@ -20,21 +23,36 @@
     </main>
 
     <aside>
-        <div class="img-container">
-            <img src="img/logoSVG.svg" alt="Imagen del restaurante">
-        </div>
         <div class="info-container">
+            <img src="img/logoSVG.svg" alt="Imagen del restaurante">
             <span>Nombre: Fermin</span>
-            <span>Cargo: Backend Developer </span>
+            <span>Cargo: Backend Developer</span>
         </div>
-        <div class="Atendidos-container">
-            <span id="subtitulo">Pedidos Atendidos</span>
+    
+        <h2 class="aside-title">Pedidos Atendidos</h2>
+        <div class="pedido-container Atendidos-container">
+            <!-- Pedidos atendidos -->
         </div>
+    
+        <h2 class="aside-title">Pedidos por cliente</h2>
+        <div class="cedula-container">
+            <div class="input-group">
+                <input type="text" id="cedula-input" placeholder="Ingrese la cédula del cliente" />
+                <button id="filter-button" onclick="filtrarPedidos()">Filtrar</button>
+            </div>
+        </div>
+        <div class="pedido-container PedidosCedula-container">
+            <!-- Pedidos filtrados por cédula -->
+        </div>
+    
         <div class="logout-container">
             <button class="logout-button" onclick="irAlLogin()">
                 <span class="material-symbols-outlined">logout</span>
             </button>
         </div>
     </aside>
+    
+    
 </body>
+
 </html>

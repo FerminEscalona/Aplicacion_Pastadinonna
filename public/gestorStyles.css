@@ -65,16 +65,21 @@ aside {
     right: 0;
     top: 0;
     bottom: 0;
-    padding-top: 0;
-    padding-right: 20px;
-    padding-left: 20px;
+    padding: 20px;
     background-color: var(--section-background-color);
     box-sizing: border-box;
     border-left: 2px solid var(--primary-color);
-    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-y: auto;
+}
+.aside-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    text-align: center;
 }
 .encabezado{
     background-color: var(--primary-color);
@@ -88,21 +93,19 @@ aside {
 }
 
 /* Imagen de perfil en el aside */
-.img-container {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    overflow: hidden;
+.info-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    background-color: var(--section-background-color);
+    margin-bottom: 20px;
 }
 
-.img-container img {
-    width: 100%;
-    height: 100%;
+.info-container img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
     object-fit: cover;
+    margin-bottom: 10px;
 }
 
 /* Información de usuario en el aside */
@@ -128,7 +131,7 @@ aside {
     border-radius: 10px;
     border: 1px solid var(--primary-color);
     width: 100%;
-    height: 450px;
+    height: 1000px; /* Aumentado de 700px a 1000px */
     box-sizing: border-box;
 }
 
@@ -269,4 +272,163 @@ aside {
         padding: 15px 10px;
     }
 }
+.cedula-container {
+    width: 100%;
+    margin-bottom: 10px;
+}
 
+.cedula-container input {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 2px solid var(--primary-color);
+    background-color: var(--notification-bg-color);
+    font-size: var(--font-size-medium);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.cedula-container input:focus {
+    outline: none;
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 8px var(--highlight-color);
+}
+
+.PedidosCedula-container p {
+    font-size: var(--font-size-medium);
+    color: var(--primary-color);
+    text-align: center;
+    margin-top: 10px;
+    height: 700px;
+}
+
+.PedidosCedula-container {
+    overflow-y: auto;
+    background-color: var(--eliminated-bg-color);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--primary-color);
+    width: 100%;
+    height: 400px; /* Aumentado de 200px a 400px */
+    box-sizing: border-box;
+}
+.cedula-info {
+    font-size: 1.2rem; /* Ajustar según el tamaño deseado */
+    font-weight: bold;
+    text-align: right;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-group input, .input-group button {
+    height: 40px; /* Igual altura para ambos */
+    border-radius: 5px;
+    font-size: 16px; /* Tamaño de texto coherente */
+    border: 2px solid var(--primary-color);
+}
+
+.input-group input {
+    padding: 0 10px;
+    flex: 1;
+    background-color: var(--notification-bg-color);
+}
+
+.input-group button {
+    padding: 0 15px;
+    background-color: var(--button-bg-color);
+    color: var(--text-color-white);
+    cursor: pointer;
+}
+
+.input-group button:hover {
+    background-color: var(--highlight-color);
+    border-color: var(--highlight-color);
+}
+
+/* Ajustes para los contenedores */
+.pedido-container {
+    overflow-y: auto;
+    background-color: var(--eliminated-bg-color);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--primary-color);
+    width: 100%;
+    height: 400px; /* Aumentado de 200px a 400px */
+    box-sizing: border-box;
+    margin-bottom: 30px;
+}
+
+.pedido-container .deleted-notification {
+    background-color: var(--notification-bg-color);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid var(--primary-color);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pedido-container .deleted-notification .order-details {
+    font-size: var(--font-size-small);
+    text-align: left;
+}
+
+.pedido-container .deleted-notification .order-details ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 5px 0;
+}
+
+.pedido-container .deleted-notification .order-details ul li {
+    margin-bottom: 5px;
+}
+/* Scrollbar general */
+::-webkit-scrollbar {
+    width: 8px; /* Ancho del scrollbar */
+    height: 8px; /* Altura del scrollbar (horizontal) */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color); /* Color del thumb */
+    border-radius: 10px; /* Bordes redondeados */
+    border: 2px solid var(--eliminated-bg-color); /* Espacio alrededor del thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--highlight-color); /* Color del thumb al pasar el mouse */
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--section-background-color); /* Fondo del track */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Ajustar scrollbar en contenedores específicos */
+.pedido-container {
+    overflow-y: auto;
+    scrollbar-width: thin; /* Para navegadores compatibles */
+    scrollbar-color: var(--primary-color) var(--section-background-color); /* Color del thumb y track */
+}
+
+.pedido-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.pedido-container::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+}
+
+.pedido-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--highlight-color);
+}
+
+.pedido-container::-webkit-scrollbar-track {
+    background-color: var(--section-background-color);
+}
