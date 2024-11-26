@@ -20,16 +20,17 @@
             <span>Cargo: </span>
         </div>
         <hr class="decorative-separator"> <!-- Separador decorativo -->
-        <div class="last-added">
-            <h3>Últimos Agregados</h3>
-            <ul id="last-added-list"></ul>
-        </div>
         <div class="load-container">
             <span>Cargar Trabajador</span>
             <input type="text" id="name" class="input-load" placeholder="Nombre">
+            <input type="password" id="password" class="input-load" placeholder="Contraseña">
             <input type="text" id="cargo" class="input-load" placeholder="Cargo">
             <input type="text" id="cedula" class="input-load" placeholder="C.C">
             <button id="add-worker">Agregar Trabajador</button>
+            <form id="delete-worker-form">
+                <input type="text" id="cedula-borrar" class="input-load" placeholder="C.C">
+                <button type="submit">Eliminar</button>
+            </form>
             <button class="logout-button" onclick="irAlLogin()">
                 <span class="material-symbols-outlined">logout</span>
             </button>

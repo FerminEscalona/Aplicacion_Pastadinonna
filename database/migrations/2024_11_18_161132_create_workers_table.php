@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('workers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
             $table->string('password');
             $table->string('position');
-            $table->string('phone_number');
-            $table->date('hiring_date');
+            $table->integer('cedula');
             $table->timestamps();
         });
     }

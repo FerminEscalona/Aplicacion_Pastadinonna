@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\OrderController;
 
 //Rutas de sesiond de trabajadores.
@@ -25,6 +26,12 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Ruta para login
 Route::post('/login', [AuthController::class, 'login']);
+
+// Ruta para agregar trabajadores
+Route::post('/workers', [WorkerController::class, 'store']);
+
+// Ruta para eliminar trabajadores
+Route::delete('/workers/{cedula}', [WorkerController::class, 'destroy']);
 
 Route::middleware('role:manager')->group(function () {
     Route::get('/manager/dashboard', function () {
