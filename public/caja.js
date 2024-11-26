@@ -1,3 +1,5 @@
+// caja.js
+
 const apiUrl = 'http://localhost:8000/api/product';
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -17,14 +19,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     const productoAPI = data.find(p => p.name === productoCarrito.nombre);
 
                     if (productoAPI) {
-                        const precioUnitario = productoAPI.price;
-                        const precioTotal = precioUnitario * productoCarrito.cantidad;
+                        const precioUnitario = parseFloat(productoAPI.price);
+                        const cantidad = parseInt(productoCarrito.cantidad, 10);
+                        const precioTotal = precioUnitario * cantidad;
                         totalPedido += precioTotal;
 
                         const fila = document.createElement('tr');
                         fila.innerHTML = `
                             <td>${productoCarrito.nombre}</td>
-                            <td>${productoCarrito.cantidad}</td>
+                            <td>${cantidad}</td>
                             <td>$${precioTotal.toFixed(2)}</td>
                         `;
                         productosTableBody.appendChild(fila);
@@ -36,8 +39,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error al cargar los productos desde la API:', error));
     }
 });
+
 // Obtener el formulario y el botón de confirmar pedido
-let datosFormulario;
 const formulario = document.querySelector('#formulario-pedido');
 const botonConfirmar = document.querySelector('.boton-caja');
 
@@ -55,6 +58,7 @@ function confirmarPedido() {
     const nombreCliente = document.querySelector('#nombre').value.trim();
     const telefonoCliente = document.querySelector('#telefono').value.trim();
     const direccionCliente = document.querySelector('#direccion').value.trim();
+    const cedulaCliente = document.querySelector('#cedula').value.trim(); // Nuevo campo
     const productosPedido = [];
 
     filas.forEach((fila) => {
@@ -62,21 +66,21 @@ function confirmarPedido() {
         const cantidadProducto = fila.querySelector('td:nth-child(2)').textContent;
         const precioProducto = fila.querySelector('td:nth-child(3)').textContent.replace('$', '');
         productosPedido.push({
-            nombre: nombreProducto,
-            cantidad: cantidadProducto,
-            precio: precioProducto,
+            name: nombreProducto,
+            quantity: parseInt(cantidadProducto, 10),
+            price: parseFloat(precioProducto),
         });
     });
 
-    const totalPedido = document.querySelector('#total').textContent.replace('$', '');
+    const totalPedido = parseFloat(document.querySelector('#total').textContent.replace('$', ''));
 
     // Crear un objeto con los datos del formulario
     const datosFormulario = {
         name: nombreCliente,
-        phone_number: telefonoCliente,
+        phone: telefonoCliente,
         address: direccionCliente,
-        products: productosPedido,
-        total: totalPedido,
+        identification_number: cedulaCliente, // Cambio de clave y nombre
+        products_json: JSON.stringify(productosPedido), // Cambio de clave y formato
     };
 
     // Validar los campos obligatorios
@@ -94,12 +98,16 @@ function confirmarPedido() {
         document.querySelector('#direccion').style.borderColor = 'red';
         valid = false;
     }
+    if (!cedulaCliente) { // Validar la cédula
+        document.querySelector('#cedula').style.borderColor = 'red';
+        valid = false;
+    }
 
     // Mostrar alerta si hay campos vacíos
     if (!valid) {
         alert("Por favor, llene todos los campos obligatorios.");
         // Restablecer el borde al color original cuando el usuario hace clic en un campo
-        ['nombre', 'telefono', 'direccion'].forEach((id) => {
+        ['nombre', 'telefono', 'direccion', 'cedula'].forEach((id) => {
             document.querySelector(`#${id}`).addEventListener('focus', function () {
                 this.style.borderColor = '';
             });
@@ -107,20 +115,30 @@ function confirmarPedido() {
         return;
     }
 
+    // Obtener el token de autenticación si estás usando uno (opcional)
+    const token = localStorage.getItem('access_token');
+
     // Enviar los datos a la API del backend
     fetch('http://localhost:8000/api/orders', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            // 'Authorization': `Bearer ${token}`, // Descomenta si usas autenticación
         },
         body: JSON.stringify(datosFormulario),
     })
         .then((response) => {
             if (response.ok) {
-                alert("Su pedido ha sido creado con éxito.");
+                return response.json().then((data) => {
+                    alert("Su pedido ha sido creado con éxito.");
+                    // Opcional: limpiar el formulario o redirigir al usuario
+                    formulario.reset();
+                    document.querySelector('.productos').innerHTML = '';
+                    document.querySelector('#total').textContent = '$0.00';
+                });
             } else {
                 return response.json().then((data) => {
-                    alert(`Error: ${data.message}`);
+                    alert(`Error: ${data.message || 'Ocurrió un error inesperado.'}`);
                 });
             }
         })
@@ -129,4 +147,3 @@ function confirmarPedido() {
             alert('Hubo un error al crear el pedido.');
         });
 }
-
