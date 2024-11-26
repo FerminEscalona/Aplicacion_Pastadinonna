@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WorkerController;
 
 Route::options('/{any}', function () {
     return response()->json([], 200);
@@ -17,6 +18,8 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Ruta para login
 Route::post('/login', [AuthController::class, 'login']);
+// Ruta para agregar trabajadores
+Route::post('/workers', [WorkerController::class, 'store']);
 
 Route::middleware('role:manager')->group(function () {
     Route::get('/manager/dashboard', function () {

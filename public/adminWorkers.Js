@@ -1,3 +1,4 @@
+/*
 // Lista de últimos trabajadores agregados
 let lastAddedWorkers = [];
 
@@ -120,6 +121,42 @@ function cargarInformacionUsuario() {
         `;
     }
 }
+*/
+document.getElementById('add-worker').addEventListener('click', async () => {
+    const name = document.getElementById('name').value;
+    const password = document.getElementById('password').value;
+    const position = document.getElementById('cargo').value;
+    const cedula = document.getElementById('cedula').value;
+
+    const payload = {
+        name,
+        password,
+        position,
+        cedula: parseInt(cedula),
+    };
+
+    try {
+        const response = await fetch('http://localhost:8000/api/workers', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alert(`Trabajador creado: ${data.worker.name}`);
+        } else {
+            const error = await response.json();
+            console.error('Error:', error);
+            alert('No se pudo agregar el trabajador.');
+        }
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+    }
+});
 
 function irAlLogin() {
     window.location.href = 'login.html';
