@@ -9,10 +9,10 @@ class customer extends Model
     use hasFactory;
     protected $fillable = ['id','nombre', 'telefono', 'direccion'];
     protected $casts = [
-        'id' => 'integer',
         'name' => 'string',
         'phone' => 'string',
         'direction' => 'string',
+        'identification_number' => 'string',
     ];
     protected $hidden = [
         'created_at',

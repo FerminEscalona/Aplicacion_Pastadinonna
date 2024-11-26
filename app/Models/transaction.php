@@ -8,21 +8,21 @@ class transaction extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id',
-        'total',
+        'customer_id',
+        'status',
     ];
 
     protected $casts = [
-        'id' => 'integer',
-        'total' => 'float',
+        'customer_id' => 'String',
+        'status' => 'float',
     ];
 
-    public function client()
+    public function customer()
     {
-        return $this->belongsTo(client::class);
+        return $this->belongsTo(customer::class);
     }
-    public function detail()
+    public function orderItems()
     {
-        return $this->hasMany(detail::class);
+        return $this->hasMany(orderItem::class);
     }
 }

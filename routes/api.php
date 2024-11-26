@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
+
 
 Route::options('/{any}', function () {
     return response()->json([], 200);
@@ -23,8 +25,16 @@ Route::middleware('role:manager')->group(function () {
         return view('manager.dashboard');
     });
 });
+
 Route::middleware('role:worker')->group(function () {
     Route::get('/worker/dashboard', function () {
         return view('worker.dashboard');
     });
 });
+
+//Rutas de sesiond de trabajadores.
+
+Route::get('/orders/pending', [OrderController::class, 'getPendingOrders']);
+Route::get('/orders/attended', [OrderController::class, 'getAttendedOrders']);
+Route::get('/orders/customer/{identification_number}', [OrderController::class, 'searchByCustomerId']);
+Route::post('/orders', [OrderController::class, 'store']);
