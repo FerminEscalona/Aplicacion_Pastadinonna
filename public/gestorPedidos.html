@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="gestorStyles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=logout" />
-    <script src="logic.js"></script>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=logout" />
+    <script src="pedidos.js"></script>
     <title>Pedidos</title>
 </head>
+
 <body>
     <header class="encabezado">
         <h1 id="titulo">
             PEDIDOS PENDIENTES
-            </h1>
+        </h1>
     </header>
     <main>
         <button onclick="crearPedidoTemporal()">PEDIDO TEMPORAL</button>
@@ -27,8 +30,18 @@
             <span>Nombre: Fermin</span>
             <span>Cargo: Backend Developer </span>
         </div>
-        <div class="Atendidos-container">
+        <div class="pedido-container Atendidos-container">
             <span id="subtitulo">Pedidos Atendidos</span>
+        </div>
+        <div class="cedula-container">
+            <label for="cedula-input">Pedidos por Cédula</label>
+            <div class="input-group">
+                <input type="text" id="cedula-input" placeholder="Ingrese la cédula" />
+                <button id="filter-button" onclick="filtrarPedidos()">Filtrar</button>
+            </div>
+            <div class="pedido-container PedidosCedula-container">
+                <span id="subtitulo">Pedidos por Cédula</span>
+            </div>
         </div>
         <div class="logout-container">
             <button class="logout-button" onclick="irAlLogin()">
@@ -37,4 +50,5 @@
         </div>
     </aside>
 </body>
+
 </html>
