@@ -18,8 +18,12 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Ruta para login
 Route::post('/login', [AuthController::class, 'login']);
+
 // Ruta para agregar trabajadores
 Route::post('/workers', [WorkerController::class, 'store']);
+
+// Ruta para eliminar trabajadores
+Route::delete('/workers/{cedula}', [WorkerController::class, 'destroy']);
 
 Route::middleware('role:manager')->group(function () {
     Route::get('/manager/dashboard', function () {

@@ -30,4 +30,22 @@ class WorkerController extends Controller
             'worker' => $worker,
         ], 201);
     }
+
+    // Método para eliminar un trabajador por cedula
+    public function destroy($cedula)
+    {
+        // Buscar el trabajador por cedula
+        $worker = Worker::where('cedula', $cedula)->first();
+
+        // Verificar si el trabajador existe
+        if (!$worker) {
+            return response()->json(['message' => 'Trabajador no encontrado'], 404);
+        }
+
+        // Eliminar el trabajador de la base de datos
+        $worker->delete();
+
+        // Devolver respuesta de éxito
+        return response()->json(['message' => 'Trabajador eliminado con éxito'], 200);
+    }
 }

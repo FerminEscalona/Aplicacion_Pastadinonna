@@ -158,6 +158,43 @@ document.getElementById('add-worker').addEventListener('click', async () => {
     }
 });
 
+// Función para eliminar un trabajador usando su cedula
+async function deleteWorker(cedula) {
+    try {
+        const response = await fetch(`http://localhost:8000/api/workers/${cedula}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert(data.message);  // Mostrar mensaje de éxito
+            // Aquí puedes actualizar la interfaz de usuario (por ejemplo, eliminar el trabajador de una lista)
+        } else {
+            alert(data.message);  // Mostrar mensaje de error
+        }
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        alert('Hubo un error al intentar eliminar el trabajador.');
+    }
+}
+
+// Evento de envío del formulario
+document.getElementById('delete-worker-form').addEventListener('submit', function (event) {
+    event.preventDefault();  // Evitar que el formulario se envíe de forma tradicional
+
+    const cedula = document.getElementById('cedula-borrar').value;  // Obtener la cedula del formulario
+
+    if (cedula) {
+        // Llamar a la función de eliminación con la cedula obtenida
+        deleteWorker(cedula);
+    } else {
+        alert('Por favor ingresa una cédula válida.');
+    }
+});
 function irAlLogin() {
     window.location.href = 'login.html';
 }
