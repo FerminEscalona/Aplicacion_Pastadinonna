@@ -25,6 +25,10 @@ Route::post('/workers', [WorkerController::class, 'store']);
 // Ruta para eliminar trabajadores
 Route::delete('/workers/{cedula}', [WorkerController::class, 'destroy']);
 
+// obtiene todos los trabajadores
+Route::get('/workers', [WorkerController::class, 'index']);
+
+
 Route::middleware('role:manager')->group(function () {
     Route::get('/manager/dashboard', function () {
         return view('manager.dashboard');

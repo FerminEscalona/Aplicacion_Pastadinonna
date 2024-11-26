@@ -48,4 +48,15 @@ class WorkerController extends Controller
         // Devolver respuesta de éxito
         return response()->json(['message' => 'Trabajador eliminado con éxito'], 200);
     }
+
+    // Método para obtener todos los trabajadores
+    public function index()
+    {
+        $workers = Worker::all();
+
+        return response()->json([
+            'success' => true,
+            'data' => $workers,
+        ]);
+    }
 }
