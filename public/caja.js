@@ -108,7 +108,7 @@ function confirmarPedido() {
     }
 
     // Enviar los datos a la API del backend
-    fetch('http://localhost:8000/api/order', {
+    fetch('http://localhost:8000/api/orders', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
