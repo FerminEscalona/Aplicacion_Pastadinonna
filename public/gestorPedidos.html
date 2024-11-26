@@ -23,32 +23,36 @@
     </main>
 
     <aside>
-        <div class="img-container">
-            <img src="img/logoSVG.svg" alt="Imagen del restaurante">
-        </div>
         <div class="info-container">
+            <img src="img/logoSVG.svg" alt="Imagen del restaurante">
             <span>Nombre: Fermin</span>
-            <span>Cargo: Backend Developer </span>
+            <span>Cargo: Backend Developer</span>
         </div>
+    
+        <h2 class="aside-title">Pedidos Atendidos</h2>
         <div class="pedido-container Atendidos-container">
-            <span id="subtitulo">Pedidos Atendidos</span>
+            <!-- Pedidos atendidos -->
         </div>
+    
+        <h2 class="aside-title">Pedidos por Cédula</h2>
         <div class="cedula-container">
-            <label for="cedula-input">Pedidos por Cédula</label>
             <div class="input-group">
                 <input type="text" id="cedula-input" placeholder="Ingrese la cédula" />
                 <button id="filter-button" onclick="filtrarPedidos()">Filtrar</button>
             </div>
-            <div class="pedido-container PedidosCedula-container">
-                <span id="subtitulo">Pedidos por Cédula</span>
-            </div>
         </div>
+        <div class="pedido-container PedidosCedula-container">
+            <!-- Pedidos filtrados por cédula -->
+        </div>
+    
         <div class="logout-container">
             <button class="logout-button" onclick="irAlLogin()">
                 <span class="material-symbols-outlined">logout</span>
             </button>
         </div>
     </aside>
+    
+    
 </body>
 
 </html>
