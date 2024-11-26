@@ -122,58 +122,33 @@ function createNotificationPedido(pedido) {
 }
 
 // Función para marcar un pedido como atendido
-async function AtenderPedido(pedidoId) {
+function AtenderPedido(pedidoId) {
     console.log("Marcando pedido como atendido. ID:", pedidoId);
-
-    try {
-        // Enviar solicitud para actualizar el estado del pedido en la base de datos
-        const response = await fetch(`http://localhost:8000/api/orders/${pedidoId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                // Agrega aquí cualquier encabezado de autenticación si es necesario
-            },
-            body: JSON.stringify({ status: 'attended' })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            console.log("Pedido actualizado correctamente en el servidor:", data);
-
-            // Encontrar el pedido en pedidosPendientes
-            const pedidoIndex = pedidosPendientes.findIndex(p => p.id === pedidoId);
-            if (pedidoIndex === -1) {
-                console.error("Pedido no encontrado en pendientes.");
-                return;
-            }
-
-            const pedido = pedidosPendientes[pedidoIndex];
-            pedido.estado = "Atendido";
-
-            // Mover el pedido de pendientes a atendidos
-            pedidosPendientes.splice(pedidoIndex, 1);
-            pedidosAtendidos.push(pedido);
-
-            // Remover la notificación del contenedor principal
-            const mainContainer = document.getElementById('main-container');
-            const notification = mainContainer.querySelector(`.notification-container[data-id='${pedidoId}']`);
-            if (notification) {
-                notification.remove();
-            } else {
-                console.error("No se encontró la notificación en el contenedor principal.");
-            }
-
-            // Mostrar el pedido atendido en el contenedor de atendidos
-            mostrarPedidoAtendido(pedido);
-        } else {
-            console.error("Error al actualizar el pedido:", response.status, response.statusText);
-            const errorData = await response.json();
-            alert(`Error al actualizar el pedido: ${errorData.message || 'Ocurrió un error.'}`);
-        }
-    } catch (error) {
-        console.error("Error en la solicitud de actualización:", error);
-        alert("Ocurrió un error al intentar actualizar el pedido.");
+    // Encontrar el pedido en pedidosPendientes
+    const pedidoIndex = pedidosPendientes.findIndex(p => p.id === pedidoId);
+    if (pedidoIndex === -1) {
+        console.error("Pedido no encontrado en pendientes.");
+        return;
     }
+
+    const pedido = pedidosPendientes[pedidoIndex];
+    pedido.estado = "Atendido";
+
+    // Mover el pedido de pendientes a atendidos
+    pedidosPendientes.splice(pedidoIndex, 1);
+    pedidosAtendidos.push(pedido);
+
+    // Remover la notificación del contenedor principal
+    const mainContainer = document.getElementById('main-container');
+    const notification = mainContainer.querySelector(`.notification-container[data-id='${pedidoId}']`);
+    if (notification) {
+        notification.remove();
+    } else {
+        console.error("No se encontró la notificación en el contenedor principal.");
+    }
+
+    // Mostrar el pedido atendido en el contenedor de atendidos
+    mostrarPedidoAtendido(pedido);
 }
 
 // Función para mostrar pedido atendido
@@ -227,8 +202,8 @@ function ajustarScrollMainContainer() {
     }
 }
 
-// Función para filtrar pedidos por cédula utilizando la API
-async function filtrarPedidos() {
+// Función para filtrar pedidos por cédula
+function filtrarPedidos() {
     const cedulaInput = document.getElementById('cedula-input');
     const cedula = cedulaInput.value.trim();
 
@@ -237,49 +212,32 @@ async function filtrarPedidos() {
         return;
     }
 
-    try {
-        // Enviar solicitud para buscar pedidos por cédula
-        const response = await fetch(`http://localhost:8000/api/orders/customer/${cedula}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                // Agrega aquí cualquier encabezado de autenticación si es necesario
-            }
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            console.log("Pedidos filtrados recibidos:", data);
-
-            // Verificar la estructura de la respuesta
-            const pedidosFiltrados = Array.isArray(data.orders) ? data.orders : [];
-
-            const containerFiltrados = document.querySelector('.PedidosCedula-container');
-            if (!containerFiltrados) {
-                console.error("No se encontró el contenedor para pedidos filtrados.");
-                return;
-            }
-            containerFiltrados.innerHTML = ''; // Limpiar contenedor
-
-            if (pedidosFiltrados.length > 0) {
-                pedidosFiltrados.forEach(pedido => {
-                    // Transformar el pedido
-                    const pedidoTransformado = transformarPedido(pedido);
-                    const elementoFiltrado = crearElementoFiltrado(pedidoTransformado);
-                    containerFiltrados.appendChild(elementoFiltrado);
-                });
-            } else {
-                containerFiltrados.innerHTML = '<p>No hay pedidos para esta cédula</p>';
-            }
-        } else {
-            console.error("Error al filtrar pedidos:", response.status, response.statusText);
-            const errorData = await response.json();
-            alert(`Error al filtrar pedidos: ${errorData.message || 'Ocurrió un error.'}`);
-        }
-    } catch (error) {
-        console.error("Error en la solicitud de filtrado:", error);
-        alert("Ocurrió un error al intentar filtrar los pedidos.");
+    const containerFiltrados = document.querySelector('.PedidosCedula-container');
+    if (!containerFiltrados) {
+        console.error("No se encontró el contenedor para pedidos filtrados.");
+        return;
     }
+    containerFiltrados.innerHTML = ''; // Limpiar contenedor
+
+    const allPedidos = [...pedidosPendientes, ...pedidosAtendidos];
+
+    const pedidosFiltrados = allPedidos.filter(pedido => {
+        const cedulaBuscada = cedula.replace(/\D/g, '').trim();
+        const cedulaPedido = pedido.cedula.replace(/\D/g, '').trim();
+        return cedulaPedido === cedulaBuscada;
+    });
+
+    if (pedidosFiltrados.length === 0) {
+        containerFiltrados.innerHTML = '<p>No hay pedidos para esta cédula</p>';
+        return;
+    }
+
+    pedidosFiltrados.forEach(pedido => {
+        const clonedPedido = crearElementoFiltrado(pedido);
+        containerFiltrados.appendChild(clonedPedido);
+    });
+
+    containerFiltrados.scrollTop = 0;
 }
 
 // Función para crear el elemento HTML de un pedido filtrado
