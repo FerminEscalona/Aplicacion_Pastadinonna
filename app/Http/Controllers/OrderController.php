@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\transaction;
 use Illuminate\Http\Request;
-use App\Models\Customer;
-use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\customer;
+use App\Models\orderItem;
 use App\Http\Requests\StoreOrderRequest;
 
 class OrderController extends Controller
@@ -16,7 +15,7 @@ class OrderController extends Controller
      */
     public function getPendingOrders()
     {
-        $orders = Order::with('orderItems', 'customer')
+        $orders = transaction::with('orderItems', 'customer')
             ->where('status', 'pending')
             ->get();
 
@@ -56,7 +55,7 @@ class OrderController extends Controller
             // return redirect()->back()->with('error', 'Cliente no encontrado.');
         }
 
-        $orders = Order::with('orderItems')
+        $orders = transaction::with('orderItems')
             ->where('customer_id', $customer->id)
             ->get();
 
@@ -74,9 +73,8 @@ class OrderController extends Controller
      * Guarda un nuevo pedido y sus items.
      */
     public function store(StoreOrderRequest $request)
-    {
-        // Procesamiento del JSON y guardado del pedido y los items.
-
+{
+    try {
         // Decodificar el JSON de productos
         $products = json_decode($request->input('products_json'), true);
 
@@ -85,7 +83,7 @@ class OrderController extends Controller
         }
 
         // Crear o actualizar el cliente
-        $customer = customer::updateOrCreate(
+        $customer = Customer::updateOrCreate(
             ['identification_number' => $request->input('identification_number')],
             [
                 'name' => $request->input('name'),
@@ -103,17 +101,24 @@ class OrderController extends Controller
         // Agregar los items al pedido
         foreach ($products as $product) {
             OrderItem::create([
-                'order_id' => $order->id,
+                'transaction_id' => $order->id,
                 'product_name' => $product['name'],
                 'quantity' => $product['quantity'],
                 'price' => $product['price'],
             ]);
         }
 
-        // Devolver una respuesta
+        // Devolver una respuesta exitosa
         return response()->json([
             'message' => 'Pedido creado exitosamente.',
             'order' => $order->load('orderItems', 'customer'),
         ], 201);
+    } catch (\Exception $e) {
+        // Manejar cualquier excepción y devolver un error 500 con detalles
+        return response()->json([
+            'error' => 'Ocurrió un error al procesar la solicitud.',
+            'details' => $e->getMessage(),
+        ], 500);
     }
+}
 }

@@ -11,10 +11,9 @@ class transaction extends Model
         'customer_id',
         'status',
     ];
-
-    protected $casts = [
-        'customer_id' => 'String',
-        'status' => 'float',
+    protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 
     public function customer()

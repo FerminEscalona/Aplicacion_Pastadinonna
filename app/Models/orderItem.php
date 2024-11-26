@@ -6,9 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class orderItem extends Model
 {
-    protected $fillable = ['order_id', 'product_name', 'quantity', 'price'];
+    protected $fillable = [
+        'transaction_id', // Asegúrate de que este campo está incluido
+        'product_name',
+        'quantity',
+        'price',
+    ];
     protected $casts = [
-        'order_id' => 'integer',
+        'transaction_id' => 'integer',
         'product_name' => 'string',
         'quantity' => 'integer',
         'price' => 'float',

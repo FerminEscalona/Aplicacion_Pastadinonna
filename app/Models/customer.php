@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class customer extends Model
 {
     use hasFactory;
-    protected $fillable = ['id','nombre', 'telefono', 'direccion'];
+    protected $fillable = [
+        'name',
+        'phone',
+        'address',
+        'identification_number',
+    ];
     protected $casts = [
         'name' => 'string',
         'phone' => 'string',

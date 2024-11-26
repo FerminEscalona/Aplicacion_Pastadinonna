@@ -7,6 +7,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 
+//Rutas de sesiond de trabajadores.
+
+Route::get('/orders/pending', [OrderController::class, 'getPendingOrders']);
+Route::get('/orders/attended', [OrderController::class, 'getAttendedOrders']);
+Route::get('/orders/customer/{identification_number}', [OrderController::class, 'searchByCustomerId']);
+Route::post('orders', [OrderController::class, 'store']);
 
 Route::options('/{any}', function () {
     return response()->json([], 200);
@@ -32,9 +38,4 @@ Route::middleware('role:worker')->group(function () {
     });
 });
 
-//Rutas de sesiond de trabajadores.
 
-Route::get('/orders/pending', [OrderController::class, 'getPendingOrders']);
-Route::get('/orders/attended', [OrderController::class, 'getAttendedOrders']);
-Route::get('/orders/customer/{identification_number}', [OrderController::class, 'searchByCustomerId']);
-Route::post('/orders', [OrderController::class, 'store']);
